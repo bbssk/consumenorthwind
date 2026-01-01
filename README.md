@@ -25,3 +25,6 @@ File or Folder | Purpose
 Learn more at https://cap.cloud.sap/docs/get-started/.
 
 https://discovery-center.cloud.sap/protected/index.html#/mymissiondetail/118493/card/11087808/?tab=projectboard
+
+create from servce center automatically added to destination
+![alt text](image.png)
