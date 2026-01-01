@@ -23,3 +23,5 @@ File or Folder | Purpose
 ## Learn More
 
 Learn more at https://cap.cloud.sap/docs/get-started/.
+
+https://discovery-center.cloud.sap/protected/index.html#/mymissiondetail/118493/card/11087808/?tab=projectboard
