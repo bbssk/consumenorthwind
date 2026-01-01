@@ -32,3 +32,5 @@ create from servce center automatically added to destination
 
 pick anyone option
 ![alt text](image-1.png)
+
+1.add-nortwind-datamodel
