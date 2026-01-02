@@ -7,7 +7,8 @@
     "express": "^4",
     "@sap-cloud-sdk/connectivity": "^4",
     "@sap-cloud-sdk/http-client": "^4",
-    "@sap-cloud-sdk/resilience": "^4"
+    "@sap-cloud-sdk/resilience": "^4",
+    "@sap/xssec": "^4"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2",
@@ -35,6 +36,9 @@
         },
         "csrf": true,
         "csrfInBatch": true
+      },
+      "[production]": {
+        "auth": "xsuaa"
       }
     }
   }

@@ -3,60 +3,64 @@ ID: consumenorthwind
 description: A simple CAP project.
 version: 1.0.0
 modules:
-- name: consumenorthwind-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: consumenorthwind-destination
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: ${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-    instances: 1
-  build-parameters:
-    builder: npm-ci
-- name: consumenorthwind-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: consumenorthwind-destination-service
+  - name: consumenorthwind-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: consumenorthwind-destination-service
+      - name: uaa_consumenorthwind
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
     parameters:
-      content-target: true
-  - name: uaa_consumenorthwind
+      buildpack: nodejs_buildpack
+      instances: 1
+    build-parameters:
+      builder: npm-ci
+  - name: consumenorthwind-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: consumenorthwind-destination-service
+        parameters:
+          content-target: true
+      - name: uaa_consumenorthwind
+        parameters:
+          service-key:
+            name: uaa_consumenorthwind-key
     parameters:
-      service-key:
-        name: uaa_consumenorthwind-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Authentication: OAuth2UserTokenExchange
-          Name: consumenorthwindmapprouter_uaa_consumenorthwind
-          ServiceInstanceName: consumenorthwind-xsuaa-service
-          ServiceKeyName: uaa_consumenorthwind-key
-          sap.cloud.service: consumenorthwindmapprouter
-        existing_destinations_policy: ignore
-  build-parameters:
-    no-source: true
+      content:
+        instance:
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: consumenorthwindmapprouter_uaa_consumenorthwind
+              ServiceInstanceName: consumenorthwind-xsuaa-service
+              ServiceKeyName: uaa_consumenorthwind-key
+              sap.cloud.service: consumenorthwindmapprouter
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
 resources:
-- name: consumenorthwind-destination
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: destination
-    service-plan: lite
-- name: uaa_consumenorthwind
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: consumenorthwind-xsuaa-service
-    service-plan: application
+  - name: consumenorthwind-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+  - name: uaa_consumenorthwind
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: consumenorthwind-xsuaa-service
+      service-plan: application
+      config:
+        xsappname: consumenorthwind-${org}-${space}
+        tenant-mode: dedicated
 parameters:
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production

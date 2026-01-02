@@ -36,3 +36,4 @@ pick anyone option
 1.add-nortwind-datamodel
 2.add-mta
 2.add-managed-approuter
+3.add-xsuaa-for-production
