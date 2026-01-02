@@ -1,34 +1,62 @@
 _schema-version: 3.3.0
 ID: consumenorthwind
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+- name: consumenorthwind-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: consumenorthwind-destination
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: consumenorthwind-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: consumenorthwind-destination-service
+    parameters:
+      content-target: true
+  - name: uaa_consumenorthwind
+    parameters:
+      service-key:
+        name: uaa_consumenorthwind-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Authentication: OAuth2UserTokenExchange
+          Name: consumenorthwindmapprouter_uaa_consumenorthwind
+          ServiceInstanceName: consumenorthwind-xsuaa-service
+          ServiceKeyName: uaa_consumenorthwind-key
+          sap.cloud.service: consumenorthwindmapprouter
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+resources:
+- name: consumenorthwind-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite
+- name: uaa_consumenorthwind
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: consumenorthwind-xsuaa-service
+    service-plan: application
 parameters:
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npm ci
-        - npx cds build --production
-modules:
-  - name: consumenorthwind-srv
-    type: nodejs
-    path: gen/srv
-    parameters:
-      instances: 1
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: npm-ci
-    provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          srv-url: ${default-url}
-    requires:
-      - name: consumenorthwind-destination
-
-resources:
-  - name: consumenorthwind-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
