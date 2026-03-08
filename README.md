@@ -32,3 +32,8 @@ create from servce center automatically added to destination
 
 pick anyone option
 ![alt text](image-1.png)
+
+1.add-nortwind-datamodel
+2.add-mta
+2.add-managed-approuter
+3.add-xsuaa-for-production
